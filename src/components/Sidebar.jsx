@@ -10,7 +10,8 @@ export default function Sidebar({ activeSection, setActiveSection }) {
     { id: "noteForm", label: "Note Form", icon: ClipboardDocumentListIcon },
     { id: "notes", label: "Clinical Notes", icon: Square3Stack3DIcon },
     { id: "entities", label: "Extracted Entities", icon: DocumentMagnifyingGlassIcon },
-  ];
+    { id: "charts", label: "Charts" }
+  ];   
 
   return (
     <div className="w-64 bg-white border-r border-gray-200 flex flex-col">

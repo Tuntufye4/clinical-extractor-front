@@ -3,6 +3,7 @@ import Sidebar from "./components/Sidebar";
 import NoteForm from "./components/NoteForm";
 import EntityTable from "./components/EntityTable";   
 import Unextractednotes from "./components/UnextractedList";
+import ChartSection from "./components/Charts";
 
 export default function App() {
   const [activeSection, setActiveSection] = useState("noteForm");
@@ -25,25 +26,6 @@ export default function App() {
     }
   };
 
-  // Fetch unextracted notes
-  const fetchNotes = async () => {
-    try {
-      const response = await fetch("http://localhost:8000/api//");
-      if (!response.ok) {
-        console.error("Failed to fetch notes:", response.status);
-        return;
-      }
-      const data = await response.json();
-      setNotes(data);
-    } catch (error) {
-      console.error("Error fetching notes:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchEntities();
-    fetchNotes();
-  }, []);
 
   const handleExtraction = async (noteText) => {
     try {
@@ -87,7 +69,11 @@ export default function App() {
         {activeSection === "entities" && (
           <EntityTable entities={entities} />
         )}
+
+        {activeSection === "charts" && (
+          <ChartSection entities={entities} />
+        )}
       </div>
     </div>
-  );
+  );     
 }
