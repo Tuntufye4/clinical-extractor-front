@@ -8,10 +8,10 @@ import {
 
 export default function Sidebar({ activeSection, setActiveSection }) {
   const menuItems = [
-    { id: "noteForm", label: "Note Form", icon: ClipboardDocumentListIcon },
-    { id: "notes", label: "Clinical Notes", icon: Square3Stack3DIcon },
-    { id: "entities", label: "Extracted Entities", icon: DocumentMagnifyingGlassIcon },
-    { id: "charts", label: "Charts", icon: ChartBarIcon }   
+    { id: "noteForm", label: "Note Form"},
+    { id: "notes", label: "Clinical Notes"},
+    { id: "entities", label: "Extracted Entities"},
+    { id: "charts", label: "Charts"}      
   ];            
      
   return (
@@ -22,7 +22,6 @@ export default function Sidebar({ activeSection, setActiveSection }) {
 
       <nav className="flex-1 px-2 py-4 space-y-16">   
         {menuItems.map((item) => {
-          const Icon = item.icon;
           const isActive = activeSection === item.id;
 
           return (
