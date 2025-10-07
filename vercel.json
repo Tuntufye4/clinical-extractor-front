@@ -1,0 +1,14 @@
+{
+  "build": {
+    "env": {
+      "NODE_VERSION": "20"
+    }
+  },
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist"     
+}     
+     
+
+
+    
