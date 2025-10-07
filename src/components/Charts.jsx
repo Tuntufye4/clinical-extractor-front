@@ -4,17 +4,17 @@ import WordCloud from "react-wordcloud";
 
 export default function ChartSection() {
   const [entities, setEntities] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);  
   const [error, setError] = useState(null);
- 
 
   // Fetch extracted entities from backend
   useEffect(() => {
-    async function fetchEntities() {
+    async function fetchEntities() {   
       try {
         const res = await axios.get("http://localhost:8000/api/extract/");
         const extracted = [];
 
+        // Flatten note → entities
         res.data.forEach((item) => {
           item.entities.forEach((ent) => {
             extracted.push({
@@ -41,8 +41,7 @@ export default function ChartSection() {
     fetchEntities();
   }, []);
 
-
-  // Word Cloud Data
+  // Compute drug frequencies for word cloud
   const wordCloudData = useMemo(() => {
     const freq = {};
     entities.forEach((ent) => {
@@ -53,32 +52,44 @@ export default function ChartSection() {
     return Object.entries(freq).map(([text, value]) => ({ text, value }));
   }, [entities]);
 
-  if (error) return <p className="text-red-500 text-center mt-10">{error}</p>;
+  // --- UI Rendering ---
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-80">
+        <p className="text-gray-500 animate-pulse">Loading charts...</p>
+      </div>
+    );
+  }
+
+  if (error)
+    return <p className="text-red-500 text-center mt-10">{error}</p>;
 
   return (
     <div className="space-y-10">
-      {/* Table Section */}
-        
-
       {/* Word Cloud Section */}
       <div className="bg-white rounded-2xl shadow-md p-6">
-        <h3 className="text-xl font-semibold text-gray-800 mb-4">Drug Frequency Word Cloud</h3>
+        <h3 className="text-xl font-semibold text-gray-800 mb-4">
+          Drug Frequency Word Cloud
+        </h3>
+
         {wordCloudData.length > 0 ? (
-          <div className="h-80">
+          <div className="h-[22rem] w-full">
             <WordCloud
               words={wordCloudData}
               options={{
                 rotations: 2,
                 rotationAngles: [0, 90],
                 fontSizes: [15, 60],
+                enableTooltip: true,
+                deterministic: true,
                 colors: ["#1E3A8A", "#2563EB", "#60A5FA", "#93C5FD", "#3B82F6"],
               }}
             />
           </div>
         ) : (
-          <p className="text-gray-500">No drug data available to visualize.</p>
+          <p className="text-gray-500 text-center">No drug data available to visualize.</p>
         )}
       </div>
-    </div>   
-  );    
+    </div>
+  );
 }

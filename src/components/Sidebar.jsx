@@ -3,6 +3,7 @@ import {
   ClipboardDocumentListIcon,
   DocumentMagnifyingGlassIcon,
   Square3Stack3DIcon,
+  ChartBarIcon,         
 } from "@heroicons/react/24/outline";   
 
 export default function Sidebar({ activeSection, setActiveSection }) {
