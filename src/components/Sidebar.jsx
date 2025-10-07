@@ -8,13 +8,13 @@ import {
 
 export default function Sidebar({ activeSection, setActiveSection }) {
   const menuItems = [
-    { id: "noteForm", label: "Note Form"},
+    { id: "noteForm", label: "Note Formm"},
     { id: "notes", label: "Clinical Notes"},
-    { id: "entities", label: "Extracted Entities"},
+    { id: "entities", label: "Extracted Entities"},  
     { id: "charts", label: "Charts"}      
   ];            
      
-  return (
+  return (    
     <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
       <div className="px-6 py-4 border-b border-gray-200">
         <h2 className="text-xl font-bold text-gray-800">Entity Extractor</h2>
