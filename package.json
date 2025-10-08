@@ -11,14 +11,16 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "@isoterik/react-word-cloud": "^1.2.0",
     "@tailwindcss/postcss": "^4.1.14",
     "@visx/wordcloud": "^3.12.0",
     "autoprefixer": "^10.4.21",
     "axios": "^1.12.2",
+    "d3": "^7.9.0",
     "d3-cloud": "^1.2.7",
     "postcss": "^8.5.6",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "tailwindcss": "^3.4.13"
   },
   "devDependencies": {

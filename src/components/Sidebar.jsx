@@ -8,7 +8,7 @@ import {
 
 export default function Sidebar({ activeSection, setActiveSection }) {
   const menuItems = [
-    { id: "noteForm", label: "Note Formm"},
+    { id: "noteForm", label: "Note Form"},
     { id: "notes", label: "Clinical Notes"},
     { id: "entities", label: "Extracted Entities"},  
     { id: "charts", label: "Charts"}      
