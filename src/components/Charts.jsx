@@ -1,38 +1,39 @@
 import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
-import { WordCloud } from "@isoterik/react-word-cloud";
+import WordCloud from "react-d3-cloud";
 
 export default function ChartSection() {
   const [entities, setEntities] = useState([]);
-  const [loading, setLoading] = useState(true);  
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [ready, setReady] = useState(false);
 
-  // Fetch extracted entities from backend
   useEffect(() => {
-    async function fetchEntities() {   
+    async function fetchEntities() {
       try {
         const res = await axios.get("http://localhost:8000/api/extract/");
         const extracted = [];
 
-        // Flatten note → entities
         res.data.forEach((item) => {
-          item.entities.forEach((ent) => {
-            extracted.push({
-              id: ent.id,
-              age: ent.age || "-",
-              drug: ent.drug || "-",
-              route: ent.route || "-",
-              form: ent.form || "-",
-              diagnosis: ent.diagnosis || "-",
-              condition: ent.condition || "-",
+          const entitiesArray = item.note?.entities?.length
+            ? item.note.entities
+            : item.entities;
+
+          entitiesArray.forEach((ent) => {
+            const drugs = ent.drug
+              ? ent.drug.split(",").map((d) => d.trim()).filter(Boolean)
+              : [];
+
+            drugs.forEach((drug) => {
+              extracted.push({ drug });
             });
           });
         });
 
         setEntities(extracted);
       } catch (err) {
-        console.error("Error fetching entities:", err);
-        setError("Failed to load extracted entities. Check your backend connection.");
+        console.error(err);
+        setError("Failed to fetch entities.");
       } finally {
         setLoading(false);
       }
@@ -41,59 +42,54 @@ export default function ChartSection() {
     fetchEntities();
   }, []);
 
-  // Compute drug frequencies for word cloud
   const wordCloudData = useMemo(() => {
     const freq = {};
-    entities.forEach((ent) => {
-      if (ent.drug && ent.drug !== "-") {
-        freq[ent.drug] = (freq[ent.drug] || 0) + 1;
-      }
+    entities.forEach((e) => {
+      freq[e.drug] = (freq[e.drug] || 0) + 1;
     });
-    return Object.entries(freq).map(([text, value]) => ({ text, value }));
+
+    const dataArr = Object.entries(freq).map(([text, value]) => ({ text, value }));
+    return dataArr.sort((a, b) => b.value - a.value).slice(0, 30);
   }, [entities]);
 
-  // --- UI Rendering ---
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-80">
-        <p className="text-gray-500 animate-pulse">Loading charts...</p>
-      </div>
-    );
-  }
+  useEffect(() => {
+    setReady(true);
+  }, []);
 
-  if (error)
-    return <p className="text-red-500 text-center mt-10">{error}</p>;
+  if (error) return <p className="text-red-500 text-center mt-4">{error}</p>;
 
   return (
     <div className="space-y-10">
-      {/* Word Cloud Section */}
       <div className="bg-white rounded-2xl shadow-md p-6">
         <h3 className="text-xl font-semibold text-gray-800 mb-4">
-          Drug Frequency Word Cloud
+          Drug Frequency
         </h3>
 
-        {wordCloudData.length > 0 ? (
-          <div className="h-[22rem] w-full">
+        {ready && !loading && (
+          <div
+            style={{
+              width: "100%",
+              maxWidth: 1200,
+              height: 700,
+              margin: "0 auto",
+            }}
+          >
             <WordCloud
-              words={wordCloudData}
-              options={{
-                rotations: 2,
-                rotationAngles: [0, 90],
-                fontSizes: [15, 60],
-                deterministic: true,
-                colors: ["#1E3A8A", "#2563EB", "#60A5FA", "#93C5FD", "#3B82F6"],
-              }}
-              style={{
-                width: "100%",
-                height: "100%",
-              }}
+              key={wordCloudData.length}
+              data={wordCloudData}
+              font="Times"
+              fontStyle="italic"
+              fontWeight="bold"
+              fontSize={(word) =>
+                Math.min(Math.max(Math.log2(word.value + 1) * 40, 18), 120)
+              }
+              spiral="rectangular"
+              rotate={() => 0}
+              padding={2}
             />
           </div>
-        ) : (
-          <p className="text-gray-500 text-center">No drug data available to visualize.</p>
         )}
       </div>
     </div>
   );
 }
-      
